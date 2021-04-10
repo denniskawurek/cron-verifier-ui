@@ -5,6 +5,9 @@
       Verify your crons and show next execution times over different timezones.
     </p>
   </div>
+  <div class="alert">
+    This is an early beta stage. So if you find any issues, please contact me or hand over an issue.
+  </div>
 
   <div>
     <p>
@@ -21,7 +24,7 @@
       <h3>Description:</h3>
       <p>{{ description }}</p>
     </div>
-    <table v-if="isValid">
+    <table v-if="isValid && nextExecutionTimes.length > 0">
       <tr>
         <th>UTC</th>
         <th>Your time</th>
@@ -97,6 +100,12 @@ li {
 }
 a {
   color: #42b983;
+}
+
+.alert {
+  border-color:yellow;
+  background-color: rgb(243, 243, 171);
+  padding: 10px;
 }
 
 input,
