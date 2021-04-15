@@ -13,7 +13,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 
 #nav {
@@ -29,39 +28,7 @@
   color: #42b983;
 }
 
-
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-
-.alert {
-  border-color:yellow;
-  background-color: rgb(243, 243, 171);
-  padding: 10px;
-}
-
-input,
-input:focus {
-  font-size: 2.5em;
-  text-align: center;
-  border-style: solid;
-  color: #000000;
-}
-
-input.success {
-  border-color: #4bda99;
-}
-input.error {
-  border-color: #da4b52;
+.p-inputtext-lg {
+  font-size: 5em
 }
 </style>

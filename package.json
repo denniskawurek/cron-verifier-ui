@@ -10,6 +10,9 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "cron-verifier": "file:../cronizer/cron-verifier-1.0.0.tgz",
+    "primeflex": "^2.0.0",
+    "primeicons": "^4.1.0",
+    "primevue": "^3.3.5",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"
   },
