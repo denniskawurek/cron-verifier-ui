@@ -6,10 +6,6 @@
         Verify your crons and show next execution times over different
         timezones.
       </p>
-      <Message severity="warn">
-        This is an early beta stage. So if you find any issues, please contact
-        me or hand over an issue.
-      </Message>
     </div>
   </div>
 
@@ -17,8 +13,8 @@
     <div class="p-field p-col-6">
       <InputText
         class="p-inputtext-lg p-text-center"
-        :value="cronExpression"
-        @input="calculate"
+        v-model="cronExpression"
+        v-on:input="calculate"
         v-bind:class="{ 'p-success': isValid, 'p-invalid': !isValid }"
       ></InputText>
       <small class="p-error" v-if="!isValid">Invalid expression.</small>
@@ -37,7 +33,7 @@
       />
       <OverlayPanel ref="historyPanel">
         <Listbox
-          v-model="selectedCity"
+          v-model="selectedHistoryElement"
           :options="history"
           optionLabel="value"
         />
@@ -55,12 +51,36 @@
         optionValue="value"
         placeholder="Select Timezones"
         display="chip"
+        v-on:change="calculate"
+      />
+    </div>
+    <div class="p-col">
+      <Calendar
+        v-model="startValue"
+        :showTime="true"
+        hourFormat="24"
+        icon="pi pi-calendar-times"
+        :showIcon="true"
+        placeholder="max"
+        v-on:date-select="calculate"
+      />
+    </div>
+    <div class="p-col">
+      <Calendar
+        v-model="endValue"
+        :showTime="true"
+        hourFormat="24"
+        icon="pi pi-calendar-times"
+        :showIcon="true"
+        placeholder="max"
+        v-on:date-select="calculate"
       />
     </div>
     <div class="p-col">
       <InputNumber
         id="minmax-buttons"
         v-model="numberOfCalculations"
+        v-on:input="calculate"
         mode="decimal"
         showButtons
         :min="1"
@@ -101,20 +121,23 @@ export default {
       cronExpression: "",
       nextExecutionTimes: [],
       numberOfCalculations: 5,
+      selectedHistoryElement: "",
       timezones: json,
       columns: [{ field: "UTC", header: "UTC" }],
       history: [],
+      startValue: new Date(),
+      endValue: null,
     };
   },
   methods: {
-    calculate(e) {
-      this.cronExpression = e.target.value;
+    calculate() {
+      //this.cronExpression = e.target.value;
       try {
         this.description = describe(this.cronExpression);
         const calculatedExecutions = nextExecutions(
           this.cronExpression,
-          new Date(Date.now()),
-          null,
+          this.startValue,
+          this.endValue,
           this.numberOfCalculations
         );
         this.fillList(calculatedExecutions);
