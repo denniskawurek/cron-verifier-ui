@@ -1,6 +1,9 @@
 <template>
-  <div class="about">
-    <h1>About</h1>
+<Card>
+    <template #title>
+        About
+    </template>
+    <template #content>
     <p>This is a small side project I made when I realised that there is no reliable service to describe <em>and</em> show the next execution
     times of a cron through timezones. A use case which I faced at work.</p>
 
@@ -8,5 +11,7 @@
     <p>
       And also please double check your cron! Although I try to test as much cases as possible I cannot warranty that exactly yours will work.
       </p>
-  </div>
+    </template>
+</Card>
+
 </template>

@@ -22,14 +22,31 @@
         v-bind:class="{ 'p-success': isValid, 'p-invalid': !isValid }"
       ></InputText>
       <small class="p-error" v-if="!isValid">Invalid expression.</small>
-      <div v-if="isValid && description != ''" class="p-text-bold">
-        <p>{{ description }}</p>
-      </div>
+    </div>
+    <div class="p-col-2">
+      <Button
+        type="button"
+        label="History"
+        ref="historyPanel"
+        icon="pi pi-clock"
+        class="p-button-lg"
+        iconPos="left"
+        :showCloseIcon="true"
+        :dismissable="true"
+        @click="toggleHistory"
+      />
+      <OverlayPanel ref="historyPanel">
+        <Listbox
+          v-model="selectedCity"
+          :options="history"
+          optionLabel="value"
+        />
+      </OverlayPanel>
     </div>
   </div>
 
   <div class="p-grid p-jc-center">
-    <div class="p-col-6">
+    <div class="p-col">
       <MultiSelect
         v-model="selectedTimeZones"
         :options="timezones"
@@ -40,7 +57,7 @@
         display="chip"
       />
     </div>
-    <div class="p-col-6">
+    <div class="p-col">
       <InputNumber
         id="minmax-buttons"
         v-model="numberOfCalculations"
@@ -51,9 +68,16 @@
       />
     </div>
   </div>
+  <div class="p-fluid p-grid p-jc-center">
+    <div class="p-col">
+      <div v-if="isValid && description != ''" class="p-text-bold">
+        <p>{{ description }}</p>
+      </div>
+    </div>
+  </div>
 
   <div v-if="nextExecutionTimes.length > 0">
-    <DataTable :value="nextExecutionTimes">
+    <DataTable stripedRows :value="nextExecutionTimes" :scrollable="true">
       <Column
         v-for="col of columns"
         :field="col.field"
@@ -79,6 +103,7 @@ export default {
       numberOfCalculations: 5,
       timezones: json,
       columns: [{ field: "UTC", header: "UTC" }],
+      history: [],
     };
   },
   methods: {
@@ -86,20 +111,25 @@ export default {
       this.cronExpression = e.target.value;
       try {
         this.description = describe(this.cronExpression);
-        const res = nextExecutions(
+        const calculatedExecutions = nextExecutions(
           this.cronExpression,
           new Date(Date.now()),
           null,
           this.numberOfCalculations
         );
-        this.fillList(res);
+        this.fillList(calculatedExecutions);
+        this.history.push({ value: this.cronExpression });
       } catch (e) {
         this.isValid = false;
       }
     },
-    fillList(executionTimes) {
-      this.selectedTimeZones?.forEach(timezone => this.columns.push({field: timezone, header: timezone}))
-      this.nextExecutionTimes = executionTimes.map((time) => {
+    fillList(calculatedExecutions) {
+      this.columns = [{ field: "UTC", header: "UTC" }];
+      this.selectedTimeZones?.forEach((timezone) =>
+        this.columns.push({ field: timezone, header: timezone })
+      );
+      this.nextExecutionTimes = [];
+      this.nextExecutionTimes = calculatedExecutions.map((time) => {
         const converted = {};
         this.columns.forEach(
           (tz) =>
@@ -107,10 +137,12 @@ export default {
               timeZone: tz.field,
             }))
         );
-        console.log(converted)
         return converted;
       });
       this.isValid = true;
+    },
+    toggleHistory(e) {
+      this.$refs.historyPanel.toggle(e);
     },
   },
 };

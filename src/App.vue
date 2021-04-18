@@ -28,7 +28,7 @@
   color: #42b983;
 }
 
-.p-inputtext-lg {
+.p-inputtext.p-inputtext-lg {
   font-size: 5em
 }
 </style>
