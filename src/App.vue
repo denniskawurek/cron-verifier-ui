@@ -29,8 +29,4 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
-
-.p-inputtext.p-inputtext-lg {
-  font-size: 5em
-}
 </style>

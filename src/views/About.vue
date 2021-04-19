@@ -11,8 +11,8 @@
       <p>
         If you find an error please
         <a href="mailto:contact@cronverifier.com">contact me via mail</a> or
-        hand in an issue in
-        <a href="https://github.com/denniskawurek/cron-verifier-ui">Github</a>
+        hand in an issue at
+        <a href="https://github.com/denniskawurek/cron-verifier-ui">GitHub</a>
       </p>
       <p>
         This project is using the

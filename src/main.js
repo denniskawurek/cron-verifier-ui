@@ -13,6 +13,7 @@ import OverlayPanel from 'primevue/overlaypanel';
 import Button from 'primevue/button';
 import Listbox from 'primevue/listbox';
 import Calendar from 'primevue/calendar';
+import Tooltip from 'primevue/tooltip';
 
 import 'primevue/resources/themes/nova-vue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -34,4 +35,6 @@ app.component('OverlayPanel', OverlayPanel);
 app.component('Button', Button);
 app.component('Listbox', Listbox);
 app.component('Calendar', Calendar);
+
+app.directive('tooltip', Tooltip);
 app.mount('#app');

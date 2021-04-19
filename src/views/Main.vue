@@ -3,8 +3,7 @@
     <div class="p-col">
       <h1>Cron verifier</h1>
       <p>
-        Verify your crons and show next execution times over different
-        timezones.
+        Verify your crons and show next execution times in different timezones.
       </p>
     </div>
   </div>
@@ -36,6 +35,7 @@
           v-model="selectedHistoryElement"
           :options="history"
           optionLabel="value"
+          @change="onHistoryElementSelection"
         />
       </OverlayPanel>
     </div>
@@ -56,16 +56,19 @@
     </div>
     <div class="p-col">
       <Calendar
+        v-tooltip.bottom="
+          'Date from which next execution times shall be calculated.'
+        "
         v-model="startValue"
         :showTime="true"
         hourFormat="24"
-        icon="pi pi-calendar-times"
+        icon="pi pi-calendar"
         :showIcon="true"
-        placeholder="max"
+        placeholder="From"
         v-on:date-select="calculate"
       />
     </div>
-    <div class="p-col">
+    <!--<div class="p-col">
       <Calendar
         v-model="endValue"
         :showTime="true"
@@ -75,9 +78,10 @@
         placeholder="max"
         v-on:date-select="calculate"
       />
-    </div>
+    </div>-->
     <div class="p-col">
       <InputNumber
+        v-tooltip.bottom="'Number of calculations of next execution times.'"
         id="minmax-buttons"
         v-model="numberOfCalculations"
         v-on:input="calculate"
@@ -97,6 +101,7 @@
   </div>
 
   <div v-if="nextExecutionTimes.length > 0">
+    <h3>Next execution times:</h3>
     <DataTable stripedRows :value="nextExecutionTimes" :scrollable="true">
       <Column
         v-for="col of columns"
@@ -131,7 +136,6 @@ export default {
   },
   methods: {
     calculate() {
-      //this.cronExpression = e.target.value;
       try {
         this.description = describe(this.cronExpression);
         const calculatedExecutions = nextExecutions(
@@ -141,7 +145,7 @@ export default {
           this.numberOfCalculations
         );
         this.fillList(calculatedExecutions);
-        this.history.push({ value: this.cronExpression });
+        this.addToHistory(this.cronExpression);
       } catch (e) {
         this.isValid = false;
       }
@@ -166,6 +170,19 @@ export default {
     },
     toggleHistory(e) {
       this.$refs.historyPanel.toggle(e);
+    },
+    addToHistory(expression) {
+      if (
+        !this.history.some(
+          (historyElement) => historyElement.value === expression
+        )
+      ) {
+        this.history.push({ value: this.cronExpression });
+      }
+    },
+    onHistoryElementSelection() {
+      this.cronExpression = this.selectedHistoryElement.value;
+      this.calculate();
     },
   },
 };
