@@ -15,7 +15,7 @@ npm run serve
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-# Dependencies
+## Dependencies
 
 This project depends on the great work of other Open Source projects.
 Mainly the [Vue.js 3](https://vuejs.org) framework and [PrimeVue](https://www.primefaces.org/primevue) for the fronted design.
