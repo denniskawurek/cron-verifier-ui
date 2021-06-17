@@ -154,7 +154,7 @@ export default {
     },
     setRouteParamAndCalculate() {
         if(this.$route.params.cron[0] !== this.cronExpression) {
-          this.$router.replace({ name: "Main", params: {cron: [this.cronExpression]} })
+          this.$router.replace({ name: "Main", params: {cron: [this.cronExpression.trim()]} })
         }
         this.calculate();
     },
