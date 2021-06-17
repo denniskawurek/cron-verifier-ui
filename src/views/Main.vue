@@ -66,7 +66,7 @@
         icon="pi pi-calendar"
         :showIcon="true"
         placeholder="From"
-        v-on:date-select="setrouteparamandcalculate"
+        v-on:date-select="setRouteParamAndCalculate"
       />
     </div>
     <!--<div class="p-col">
@@ -85,7 +85,7 @@
         v-tooltip.bottom="'Number of calculations of next execution times.'"
         id="minmax-buttons"
         v-model="numberOfCalculations"
-        v-on:input="setrouteparamandcalculate"
+        v-on:input="setRouteParamAndCalculate"
         mode="decimal"
         showButtons
         :min="1"
