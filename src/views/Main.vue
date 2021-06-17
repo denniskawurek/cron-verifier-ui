@@ -3,7 +3,8 @@
     <div class="p-col">
       <h1>Cron verifier</h1>
       <p>
-        Verify your crons and show next execution times in different timezones.
+        Validate your crons and show next execution times in different
+        timezones.
       </p>
     </div>
   </div>
@@ -13,7 +14,7 @@
       <InputText
         class="p-inputtext-lg p-text-center"
         v-model="cronExpression"
-        v-on:input="calculate"
+        v-on:input="setRouteParamAndCalculate"
         v-bind:class="{ 'p-success': isValid, 'p-invalid': !isValid }"
       ></InputText>
       <small class="p-error" v-if="!isValid">Invalid expression.</small>
@@ -51,7 +52,7 @@
         optionValue="value"
         placeholder="Select Timezones"
         display="chip"
-        v-on:change="calculate"
+        v-on:change="setRouteParamAndCalculate"
       />
     </div>
     <div class="p-col">
@@ -65,7 +66,7 @@
         icon="pi pi-calendar"
         :showIcon="true"
         placeholder="From"
-        v-on:date-select="calculate"
+        v-on:date-select="setrouteparamandcalculate"
       />
     </div>
     <!--<div class="p-col">
@@ -76,7 +77,7 @@
         icon="pi pi-calendar-times"
         :showIcon="true"
         placeholder="max"
-        v-on:date-select="calculate"
+        v-on:date-select="setrouteparamandcalculate"
       />
     </div>-->
     <div class="p-col">
@@ -84,7 +85,7 @@
         v-tooltip.bottom="'Number of calculations of next execution times.'"
         id="minmax-buttons"
         v-model="numberOfCalculations"
-        v-on:input="calculate"
+        v-on:input="setrouteparamandcalculate"
         mode="decimal"
         showButtons
         :min="1"
@@ -118,6 +119,15 @@ import { describe, nextExecutions } from "cron-verifier/dst/CronParser";
 import json from "../json/timezones.json";
 export default {
   name: "Main",
+  created() {
+    this.setCronExpressionAndCalculateIfPossible();
+    this.$watch(
+      () => this.$route.params.cron,
+      () => {
+        this.setCronExpressionAndCalculateIfPossible();
+      }
+    );
+  },
   data() {
     return {
       selectedTimeZones: null,
@@ -135,6 +145,19 @@ export default {
     };
   },
   methods: {
+    setCronExpressionAndCalculateIfPossible() {
+      const cronParam = this.$route.params?.cron[0];
+      if (cronParam) {
+        this.cronExpression = cronParam.replace(/_/gi, " ");
+        this.calculate();
+      }
+    },
+    setRouteParamAndCalculate() {
+        if(this.$route.params.cron[0] !== this.cronExpression) {
+          this.$router.replace({ name: "Main", params: {cron: [this.cronExpression]} })
+        }
+        this.calculate();
+    },
     calculate() {
       try {
         this.description = describe(this.cronExpression);
@@ -182,7 +205,7 @@ export default {
     },
     onHistoryElementSelection() {
       this.cronExpression = this.selectedHistoryElement.value;
-      this.calculate();
+      this.setRouteParamAndCalculate();
     },
   },
 };

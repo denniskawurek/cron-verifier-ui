@@ -3,7 +3,7 @@ import Main from '../views/Main.vue'
 
 const routes = [
   {
-    path: '/',
+    path: '/:cron(.*)*',
     name: 'Main',
     component: Main
   },
