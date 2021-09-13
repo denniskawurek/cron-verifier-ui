@@ -115,18 +115,22 @@
 </template>
 
 <script>
-import { describe, nextExecutions } from "cron-verifier/dst/CronParser";
+import { describe, nextExecutions, isValid } from "cron-verifier/dst/CronParser";
 import json from "../json/timezones.json";
 export default {
   name: "Main",
+  watch: {
+    cronExpression: function (newCron) {
+      this.cronExpression = newCron.replace(/_/gi, " ");
+      this.calculate();
+    }
+  },
   created() {
-    this.setCronExpressionAndCalculateIfPossible();
-    this.$watch(
-      () => this.$route.params.cron,
-      () => {
-        this.setCronExpressionAndCalculateIfPossible();
-      }
-    );
+    const cronParam = this.$route?.params?.cron[0];
+    if (cronParam) {
+      this.cronExpression = cronParam.replace(/_/gi, " ");
+      this.calculate();
+    }
   },
   data() {
     return {
@@ -145,30 +149,27 @@ export default {
     };
   },
   methods: {
-    setCronExpressionAndCalculateIfPossible() {
-      const cronParam = this.$route.params?.cron[0];
-      if (cronParam) {
-        this.cronExpression = cronParam.replace(/_/gi, " ");
-        this.calculate();
-      }
-    },
     setRouteParamAndCalculate() {
         if(this.$route.params.cron[0] !== this.cronExpression) {
-          this.$router.replace({ name: "Main", params: {cron: [this.cronExpression.trim()]} })
+          this.$router.replace({ name: "Main", params: {cron: [this.cronExpression]} })
         }
         this.calculate();
     },
-    calculate() {
+    async calculate() {
+      if (!isValid(this.cronExpression)) {
+        this.isValid = false;
+        return;
+      }
       try {
-        this.description = describe(this.cronExpression);
-        const calculatedExecutions = nextExecutions(
+        describe(this.cronExpression).then(description => this.description = description);
+        const calculatedExecutions = await nextExecutions(
           this.cronExpression,
           this.startValue,
           this.endValue,
           this.numberOfCalculations
         );
-        this.fillList(calculatedExecutions);
-        this.addToHistory(this.cronExpression);
+          this.fillList(calculatedExecutions);
+          this.addToHistory(this.cronExpression);
       } catch (e) {
         this.isValid = false;
       }
